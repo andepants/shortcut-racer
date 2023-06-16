@@ -1,13 +1,13 @@
 'use client';
 import { useState, useEffect } from 'react'
 import { KeyboardEvent } from 'react'
-import { KeyboardShorcuts } from '../interfaces';
+import { KeyboardShortcuts, KeyboardShortcutsHistory } from '../interfaces';
 
-export default function Practice({ defaultShortcuts } : { defaultShortcuts : KeyboardShorcuts }) {
+export default function Practice({ defaultShortcuts } : { defaultShortcuts : KeyboardShortcuts }) {
 
   const [inputValue, setInputValue] = useState<string>('');
   const [keysPressed, setKeysPressed] = useState<string[]>([]);
-  const [keysPressedHistory, setKeysPressedHistory] = useState<string[]>([]);
+  const [keysPressedHistory, setKeysPressedHistory] = useState<KeyboardShortcutsHistory[]>([]);
   const [currentShortcut, setCurrentShortcut] = useState<string>('');
   const [currentDescription, setCurrentDescription] = useState<string>('');
   const [currentShortcutsPracticing, setCurrentShortcutsPracticing] = useState<string[]>(defaultShortcuts.shortcuts);
@@ -32,7 +32,7 @@ export default function Practice({ defaultShortcuts } : { defaultShortcuts : Key
       if (keysPressed[keysPressed.length - 1] !== currentShortcut[keysPressed.length - 1]) {
         console.log('no match');
         const keysPressedReveresedHistory = [...keysPressedHistory]
-        keysPressedReveresedHistory.unshift('bad');
+        keysPressedReveresedHistory.unshift({"correct" : false, "keysPressed" : keysPressed.join(''), "actualShortcut" : currentShortcut});
         setKeysPressedHistory(keysPressedReveresedHistory);
         pickNewShortcut();
         setKeysPressed([]);
@@ -43,7 +43,7 @@ export default function Practice({ defaultShortcuts } : { defaultShortcuts : Key
           if (!currentShortcut.includes(keysPressed[i])) {
             console.log('no match');
             const keysPressedReveresedHistory = [...keysPressedHistory]
-            keysPressedReveresedHistory.unshift('bad');
+            keysPressedReveresedHistory.unshift({"correct" : false, "keysPressed" : keysPressed.join(''), "actualShortcut" : currentShortcut});
             setKeysPressedHistory(keysPressedReveresedHistory);
             pickNewShortcut();
             setKeysPressed([]);
@@ -53,7 +53,7 @@ export default function Practice({ defaultShortcuts } : { defaultShortcuts : Key
       }
       console.log('match!');
       const keysPressedReveresedHistory = [...keysPressedHistory]
-      keysPressedReveresedHistory.unshift('good');
+      keysPressedReveresedHistory.unshift({"correct" : true, "keysPressed" : keysPressed.join(''), "actualShortcut" : currentShortcut});
       console.log(keysPressedReveresedHistory)
       setKeysPressedHistory(keysPressedReveresedHistory);
       pickNewShortcut();
@@ -155,7 +155,9 @@ export default function Practice({ defaultShortcuts } : { defaultShortcuts : Key
       {keysPressedHistory.map((keysPressed, index) => {
         return (
           <div key={index} className="flex justify-center">
-            <div key={index} className="m-1 p-1 font-bold text-2xl">{keysPressed}</div>
+            <div key={index} className="m-1 p-1 font-bold text-2xl">{keysPressed.correct ? 'good' : 'bad'}</div>
+            <div key={index} className="m-1 p-1 font-bold text-2xl">{keysPressed.keysPressed}</div>
+            <div key={index} className="m-1 p-1 font-bold text-2xl">{keysPressed.actualShortcut}</div>
           </div>
         )})}
     </main>
