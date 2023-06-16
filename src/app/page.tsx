@@ -8,7 +8,7 @@ export default function Home() {
   const [inputValue, setInputValue] = useState<string>('');
   const [keysPressed, setKeysPressed] = useState<string[]>([]);
   const [keysPressedHistory, setKeysPressedHistory] = useState<string[][]>([]);
-  const [currentShorcut, setCurrentShortcut] = useState<string>('');
+  const [currentShortcut, setCurrentShortcut] = useState<string>('');
   const [currentDescription, setCurrentDescription] = useState<string>('');
   const [currentShortcutsPracticing, setCurrentShortcutsPracticing] = useState<string[]>(editing1.shorcuts);
   const [currentDescriptionsPracticing, setCurrentDescriptionsPracticing] = useState<string[]>(editing1.descriptions);
@@ -27,19 +27,30 @@ export default function Home() {
 
   useEffect(() => {
     const stringChecker = () : void => {
-      if (keysPressed.length !== currentShorcut.length || currentShorcut === '') return;
-      console.log('keysPressed', keysPressed.join(''), currentShorcut);
-      if (keysPressed.join('').toLowerCase() === currentShorcut) {
-        console.log('match!');
-        setKeysPressedHistory([...keysPressedHistory, ['good']].reverse());
-        pickNewShortcut();
-        setKeysPressed([]);
-      } else {
+      if (keysPressed.length !== currentShortcut.length || currentShortcut === '') return;
+      console.log('keysPressed', keysPressed.join(''), currentShortcut);
+      if (keysPressed[keysPressed.length - 1] !== currentShortcut[keysPressed.length - 1]) {
         console.log('no match');
-        setKeysPressedHistory([...keysPressedHistory, ['bad']].reverse());
+        setKeysPressedHistory([...keysPressedHistory, ['bad']]);
         pickNewShortcut();
         setKeysPressed([]);
+        return;
+      } else {
+        for (let i = 0; i < keysPressed.length - 1; i++) {
+          console.log(keysPressed[i], currentShortcut[i])
+          if (!currentShortcut.includes(keysPressed[i])) {
+            console.log('no match');
+            setKeysPressedHistory([...keysPressedHistory, ['bad']]);
+            pickNewShortcut();
+            setKeysPressed([]);
+            return;
+          }
+        }
       }
+      console.log('match!');
+      setKeysPressedHistory([...keysPressedHistory, ['good']]);
+      pickNewShortcut();
+      setKeysPressed([]);
     }
     stringChecker();
   }, [keysPressed])
@@ -124,7 +135,7 @@ export default function Home() {
       <h1 className="flex justify-center m-5 p-2 font-bold text-4xl">Shortcut Racer</h1>
       <div className="flex justify-center">
         <p className="m-5 p-2 font-bold text-2xl">{currentDescription}</p>
-        <p className="m-5 p-2 font-bold text-2xl">{currentShorcut}</p>
+        <p className="m-5 p-2 font-bold text-2xl">{currentShortcut}</p>
         <input
           type="text"
           value={inputValue}
