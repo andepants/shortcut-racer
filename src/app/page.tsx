@@ -1,16 +1,16 @@
 'use client';
 import { useState, useEffect } from 'react'
 import { KeyboardEvent } from 'react'
-import { editing1 } from '../../public/vscode'
+import { editing1, editing2 } from '../../public/vscode'
 
 export default function Home() {
 
   const [inputValue, setInputValue] = useState<string>('');
   const [keysPressed, setKeysPressed] = useState<string[]>([]);
-  const [keysPressedHistory, setKeysPressedHistory] = useState<string[][]>([]);
+  const [keysPressedHistory, setKeysPressedHistory] = useState<string[]>([]);
   const [currentShortcut, setCurrentShortcut] = useState<string>('');
   const [currentDescription, setCurrentDescription] = useState<string>('');
-  const [currentShortcutsPracticing, setCurrentShortcutsPracticing] = useState<string[]>(editing1.shorcuts);
+  const [currentShortcutsPracticing, setCurrentShortcutsPracticing] = useState<string[]>(editing1.shortcuts);
   const [currentDescriptionsPracticing, setCurrentDescriptionsPracticing] = useState<string[]>(editing1.descriptions);
 
   const handleChange = () => {};
@@ -31,7 +31,9 @@ export default function Home() {
       console.log('keysPressed', keysPressed.join(''), currentShortcut);
       if (keysPressed[keysPressed.length - 1] !== currentShortcut[keysPressed.length - 1]) {
         console.log('no match');
-        setKeysPressedHistory([...keysPressedHistory, ['bad']]);
+        const keysPressedReveresedHistory = [...keysPressedHistory]
+        keysPressedReveresedHistory.unshift('bad');
+        setKeysPressedHistory(keysPressedReveresedHistory);
         pickNewShortcut();
         setKeysPressed([]);
         return;
@@ -40,7 +42,9 @@ export default function Home() {
           console.log(keysPressed[i], currentShortcut[i])
           if (!currentShortcut.includes(keysPressed[i])) {
             console.log('no match');
-            setKeysPressedHistory([...keysPressedHistory, ['bad']]);
+            const keysPressedReveresedHistory = [...keysPressedHistory]
+            keysPressedReveresedHistory.unshift('bad');
+            setKeysPressedHistory(keysPressedReveresedHistory);
             pickNewShortcut();
             setKeysPressed([]);
             return;
@@ -48,7 +52,10 @@ export default function Home() {
         }
       }
       console.log('match!');
-      setKeysPressedHistory([...keysPressedHistory, ['good']]);
+      const keysPressedReveresedHistory = [...keysPressedHistory]
+      keysPressedReveresedHistory.unshift('good');
+      console.log(keysPressedReveresedHistory)
+      setKeysPressedHistory(keysPressedReveresedHistory);
       pickNewShortcut();
       setKeysPressed([]);
     }
@@ -123,10 +130,12 @@ export default function Home() {
     }
 
     setKeysPressed([...keysPressed, event.key]);
+    event.preventDefault();
   };
 
 
   const handleKeyUp = (event: KeyboardEvent<HTMLInputElement>) : void => {
+    event.preventDefault();
     setKeysPressed([]);
   };
 
@@ -147,11 +156,7 @@ export default function Home() {
       {keysPressedHistory.map((keysPressed, index) => {
         return (
           <div key={index} className="flex justify-center">
-            {keysPressed.map((key, index) => {
-              return (
-                <div key={index} className="m-1 p-1 font-bold text-2xl">{key}</div>
-              )
-            })}
+            <div key={index} className="m-1 p-1 font-bold text-2xl">{keysPressed}</div>
           </div>
         )})}
     </main>
