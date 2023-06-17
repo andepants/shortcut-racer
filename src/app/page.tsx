@@ -10,6 +10,11 @@ export default function Home() {
           VSCode
         </button>
       </Link>
+      <Link href='/excel' className="flex justify-center">
+        <button className="px-3 sm:px-4 m-2 sm:m-2 py-2 rounded bg-blue-500 text-white font-bold text-sm sm:text-base">
+          Excel
+        </button>
+      </Link>
     </main>
   )
 }

@@ -155,8 +155,9 @@ export default function Practice({ defaultShortcuts } : { defaultShortcuts : Key
       {keysPressedHistory.map((keysPressed, index) => {
         return (
           <div key={index} className="flex justify-center">
-            <div key={index} className="m-1 p-1 font-bold text-2xl">{keysPressed.correct ? 'good' : 'bad'}</div>
-            <div key={index} className="m-1 p-1 font-bold text-2xl">{keysPressed.keysPressed}</div>
+            <div key={index} className={`m-1 p-1 font-bold text-2xl ${keysPressed.correct ? 'text-green-500' : 'text-red-500'}`}>
+              {keysPressed.keysPressed}
+            </div>
             <div key={index} className="m-1 p-1 font-bold text-2xl">{keysPressed.actualShortcut}</div>
           </div>
         )})}
